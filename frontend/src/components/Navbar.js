@@ -11,7 +11,6 @@ const Navbar = () => {
       </div>
       </Link>
       <div>
-        {/* Button to View FIRs */}
         <Link to="/view-firs">
           <button className="bg-white text-blue-600 px-4 py-2 rounded-md shadow hover:bg-gray-100 transition">
             View FIRs

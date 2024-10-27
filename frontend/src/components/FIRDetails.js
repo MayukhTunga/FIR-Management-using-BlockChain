@@ -1,69 +1,24 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-
-const sampleFIRs = [
-  {
-    id: 1,
-    bookNo: '1234',
-    policeStation: 'Station 1',
-    district: 'District A',
-    dateOfOccurrence: '2024-09-29',
-    timeOfOccurrence: '12:00',
-    dateReported: '2024-10-01',
-    timeReported: '14:00',
-    informerName: 'John Doe',
-    informerResidence: '123 Main Street',
-    description: 'Theft of personal belongings.',
-    placeOfOccurrence: 'Market Street',
-    distanceDirection: '2km North of Station 1',
-    criminalName: 'Unknown',
-    criminalAddress: 'N/A',
-    investigationSteps: 'Investigation started; CCTV footage being reviewed.',
-    dispatchTime: '15:00',
-  },
-  {
-    id: 2,
-    bookNo: '5678',
-    policeStation: 'Station 2',
-    district: 'District B',
-    dateOfOccurrence: '2024-09-13',
-    timeOfOccurrence: '18:00',
-    dateReported: '2024-09-15',
-    timeReported: '09:00',
-    informerName: 'Jane Smith',
-    informerResidence: '456 Elm Street',
-    description: 'Assault and battery.',
-    placeOfOccurrence: 'Central Park',
-    distanceDirection: '1km West of Station 2',
-    criminalName: 'John Doe',
-    criminalAddress: '789 Oak Lane',
-    investigationSteps: 'Witness statements being taken.',
-    dispatchTime: '10:00',
-  },
-  {
-    id: 3,
-    bookNo: '9101',
-    policeStation: 'Station 3',
-    district: 'District C',
-    dateOfOccurrence: '2024-08-19',
-    timeOfOccurrence: '20:00',
-    dateReported: '2024-08-21',
-    timeReported: '08:00',
-    informerName: 'David Brown',
-    informerResidence: '789 Pine Road',
-    description: 'Hit and run accident.',
-    placeOfOccurrence: 'Highway 20',
-    distanceDirection: '5km East of Station 3',
-    criminalName: 'Unknown',
-    criminalAddress: 'N/A',
-    investigationSteps: 'Searching for vehicle involved.',
-    dispatchTime: '09:30',
-  },
-];
+import axios from 'axios';
 
 const FIRDetails = () => {
-  const { id } = useParams();
-  const fir = sampleFIRs.find((fir) => fir.id === parseInt(id));
+  const { id } = useParams(); 
+  const [fir, setFIR] = useState(null);
+
+  useEffect(() => {
+    const fetchFIRDetails = async () => {
+      try {
+        const response = await axios.get(`https://gateway.pinata.cloud/ipfs/${id}`);
+        setFIR(response.data);
+      } catch (error) {
+        console.error("Error fetching FIR details from IPFS:", error);
+        alert("Failed to load FIR details.");
+      }
+    };
+
+    fetchFIRDetails();
+  }, [id]);
 
   if (!fir) {
     return (

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 
 const FIRForm = () => {
   const [formData, setFormData] = useState({
@@ -27,29 +28,58 @@ const FIRForm = () => {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     console.log('FIR Submitted:', formData);
-    // Clear the form after submission
-    setFormData({
-      bookNo: '',
-      policeStation: '',
-      district: '',
-      dateOfOccurrence: '',
-      timeOfOccurrence: '',
-      dateReported: '',
-      timeReported: '',
-      informerName: '',
-      informerResidence: '',
-      description: '',
-      placeOfOccurrence: '',
-      distanceDirection: '',
-      criminalName: '',
-      criminalAddress: '',
-      investigationSteps: '',
-      dispatchTime: '',
-    });
-    alert('FIR Submitted Successfully!');
+
+    const fileName = `${formData.informerName}|${formData.dateOfOccurrence || 'UnknownDate'}`;
+
+    const textBlob = new Blob([JSON.stringify(formData, null, 2)], { type: 'text/plain' });
+    const file = new File([textBlob], fileName, { type: 'text/plain' });
+
+    try {
+      const fileData = new FormData();
+      fileData.append("file", file);
+
+      const responseData = await axios({
+        method: "POST",
+        url: "https://api.pinata.cloud/pinning/pinFileToIPFS",
+        data: fileData,
+        headers: {
+          pinata_api_key: process.env.REACT_APP_PINATA_API_KEY,
+          pinata_secret_api_key: process.env.REACT_APP_PINATA_SECRET_KEY,
+          "Content-Type": "multipart/form-data"
+        }
+      });
+
+      // Retrieve and display the IPFS URL
+      const fileUrl = "https://gateway.pinata.cloud/ipfs/" + responseData.data.IpfsHash;
+      console.log("Uploaded File URL:", fileUrl);
+      alert('FIR Submitted and Uploaded Successfully!');
+
+      setFormData({
+        bookNo: '',
+        policeStation: '',
+        district: '',
+        dateOfOccurrence: '',
+        timeOfOccurrence: '',
+        dateReported: '',
+        timeReported: '',
+        informerName: '',
+        informerResidence: '',
+        description: '',
+        placeOfOccurrence: '',
+        distanceDirection: '',
+        criminalName: '',
+        criminalAddress: '',
+        investigationSteps: '',
+        dispatchTime: '',
+      });
+
+    } catch (err) {
+      console.error("Error uploading file to IPFS:", err);
+      alert('Failed to upload FIR to IPFS');
+    }
   };
 
   return (
@@ -170,6 +200,24 @@ const FIRForm = () => {
             />
           </div>
         </div>
+        
+       {/* Date and Time of Dispatch from Police Station */}
+           <div className="mb-4">
+          <div>
+            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="dispatchTime">
+              Time of Dispatch
+            </label>
+            <input
+              type="time"
+              name="dispatchTime"
+              id="dispatchTime"
+              value={formData.dispatchTime}
+              onChange={handleChange}
+              className="w-full px-3 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              required
+            />
+          </div>
+        </div>
 
         {/* Name and Residence of Informer */}
         <div className="mb-4">
@@ -220,9 +268,89 @@ const FIRForm = () => {
             required
           />
         </div>
+                {/* Place of Occurrence */}
+                <div className="mb-4">
+          <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="placeOfOccurrence">
+            Place of Occurrence
+          </label>
+          <input
+            type="text"
+            name="placeOfOccurrence"
+            id="placeOfOccurrence"
+            value={formData.placeOfOccurrence}
+            onChange={handleChange}
+            className="w-full px-3 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            placeholder="Place of Occurrence"
+            required
+          />
+        </div>
 
-        {/* Additional fields like Place of Occurrence, Criminal Info, Investigation Steps, etc. */}
-        {/* ...Continue with remaining fields... */}
+        {/* Distance and Direction from Police Station */}
+        <div className="mb-4">
+          <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="distanceDirection">
+            Distance and Direction from Police Station
+          </label>
+          <input
+            type="text"
+            name="distanceDirection"
+            id="distanceDirection"
+            value={formData.distanceDirection}
+            onChange={handleChange}
+            className="w-full px-3 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            placeholder="Distance and Direction"
+            required
+          />
+        </div>
+
+        {/* Name of Criminal (if known) */}
+        <div className="mb-4">
+          <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="criminalName">
+            Name of Criminal (if known)
+          </label>
+          <input
+            type="text"
+            name="criminalName"
+            id="criminalName"
+            value={formData.criminalName}
+            onChange={handleChange}
+            className="w-full px-3 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            placeholder="Criminal Name"
+          />
+        </div>
+
+        {/* Address of Criminal (if known) */}
+        <div className="mb-4">
+          <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="criminalAddress">
+            Address of Criminal (if known)
+          </label>
+          <input
+            type="text"
+            name="criminalAddress"
+            id="criminalAddress"
+            value={formData.criminalAddress}
+            onChange={handleChange}
+            className="w-full px-3 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            placeholder="Criminal Address"
+          />
+        </div>
+
+        {/* Steps Taken Regarding Investigation */}
+        <div className="mb-4">
+          <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="investigationSteps">
+            Steps Taken Regarding Investigation
+          </label>
+          <textarea
+            name="investigationSteps"
+            id="investigationSteps"
+            value={formData.investigationSteps}
+            onChange={handleChange}
+            className="w-full px-3 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            placeholder="Describe investigation steps..."
+            rows="4"
+            required
+          />
+        </div>
+
 
         {/* Submit Button */}
         <div className="flex justify-center">

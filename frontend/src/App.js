@@ -19,6 +19,7 @@ function App() {
 
           {/* FIR Details Route */}
           <Route path="/firs/:id" element={<FIRDetails />} />
+
         </Routes>
       </div>
     </Router>
