@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import axios from 'axios';
+import Navbar from './Navbar';
 
 const FIRDetails = () => {
   const { id } = useParams(); 
@@ -22,18 +23,22 @@ const FIRDetails = () => {
 
   if (!fir) {
     return (
-      <div className="p-8">
-        <h1 className="text-2xl font-bold">FIR Not Found</h1>
-        <Link to="/view-firs" className="text-blue-500">Back to FIR List</Link>
+      <div className="p-8 min-h-screen bg-gradient-to-br from-green-400 to-blue-500 flex flex-col items-center justify-center text-white">
+        <h1 className="text-3xl font-bold mb-4">FIR Not Found</h1>
+        <Link to="/view-firs" className="text-blue-200 hover:text-blue-100 underline">
+          Back to FIR List
+        </Link>
       </div>
     );
   }
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen p-8">
-      <h1 className="text-3xl font-bold mb-6">FIR Details - {fir.bookNo}</h1>
-      <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-lg">
-        <ul className="space-y-4">
+    <>
+    <Navbar />
+    <div className="flex flex-col items-center justify-center min-h-screen p-8 bg-gradient-to-br from-green-400 to-blue-500 text-white">
+      <h1 className="text-4xl font-extrabold mb-8 drop-shadow-lg">FIR Details - {fir.bookNo}</h1>
+      <div className="bg-white p-8 rounded-lg shadow-lg max-w-2xl w-full text-gray-800">
+        <ul className="space-y-6 text-lg">
           <li><strong>Police Station:</strong> {fir.policeStation}</li>
           <li><strong>District:</strong> {fir.district}</li>
           <li><strong>Date and Time of Occurrence:</strong> {fir.dateOfOccurrence} at {fir.timeOfOccurrence}</li>
@@ -48,9 +53,12 @@ const FIRDetails = () => {
           <li><strong>Investigation Steps Taken:</strong> {fir.investigationSteps}</li>
           <li><strong>Dispatch Time:</strong> {fir.dispatchTime}</li>
         </ul>
-        <Link to="/view-firs" className="text-blue-500 mt-6 inline-block">Back to FIR List</Link>
+        <Link to="/view-firs" className="text-blue-600 hover:text-blue-700 mt-8 inline-block underline">
+          Back to FIR List
+        </Link>
       </div>
     </div>
+    </>
   );
 };
 
