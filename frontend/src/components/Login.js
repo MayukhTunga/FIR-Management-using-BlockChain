@@ -18,7 +18,7 @@ const Login = () => {
     if (username === correctUsername && password === correctPassword) {
       navigate('/fir-form'); 
     } else {
-      alert('Invalid username or password');
+      alert('Incorrect Username or Password');
     }
   };
 

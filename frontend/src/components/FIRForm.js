@@ -55,7 +55,7 @@ const FIRForm = () => {
 
       const fileUrl = "https://gateway.pinata.cloud/ipfs/" + responseData.data.IpfsHash;
       console.log("Uploaded File URL:", fileUrl);
-      alert('FIR Submitted and Uploaded Successfully!'+responseData.data.IpfsHash);
+      alert('FIR Submitted and Uploaded Successfully!'+responseData.data.IpfsHash+"\n Please Note this FIR Unique ID to access it later");
 
       setFormData({
         bookNo: '',
