@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
   const navigate = useNavigate();
-
+  
   // State for Police Login
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
