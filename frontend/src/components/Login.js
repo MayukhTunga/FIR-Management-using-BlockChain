@@ -10,13 +10,24 @@ const Login = () => {
   const [ipfsHash, setIpfsHash] = useState('');
 
   // Hardcoded credentials for Police login
-  const correctUsername = 'police';
-  const correctPassword = '12345';
+  const policeCredentials = {
+    Potheri: { username: 'Potheri', password: 'SRM' },
+    Kolakta: { username: 'Kolkata', password: 'police' },
+    Barcelona: { username: 'FCB', password: 'bestclub' },
+    Wano: {username: 'Wano', password: 'Kaido'}
+  };
 
   const handlePoliceLogin = (e) => {
     e.preventDefault();
-    if (username === correctUsername && password === correctPassword) {
-      navigate('/fir-form'); 
+    const foundStation = Object.keys(policeCredentials).find(
+      (station) =>
+        username === policeCredentials[station].username &&
+        password === policeCredentials[station].password
+    );
+
+    if (foundStation) {
+      localStorage.setItem('policeStation', foundStation);
+      navigate('/fir-form');
     } else {
       alert('Incorrect Username or Password');
     }

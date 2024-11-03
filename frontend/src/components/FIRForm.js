@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Navbar from './Navbar';
 
@@ -21,6 +21,13 @@ const FIRForm = () => {
     investigationSteps: '',
     dispatchTime: '',
   });
+
+  useEffect(() => {
+    const policeStation = localStorage.getItem('policeStation');
+    if (policeStation) {
+      setFormData((prevData) => ({ ...prevData, policeStation }));
+    }
+  }, []);
 
   const handleChange = (e) => {
     setFormData({
@@ -90,20 +97,20 @@ const FIRForm = () => {
         <h2 className="text-3xl font-extrabold text-gray-900 mb-8 text-center">File an FIR</h2>
         <form onSubmit={handleSubmit} className="space-y-6">
           {[
-            { label: 'Book No.', id: 'bookNo', placeholder: 'Book No.', type: 'text' },
-            { label: 'Police Station', id: 'policeStation', placeholder: 'Police Station', type: 'text', required: true },
-            { label: 'District', id: 'district', placeholder: 'District', type: 'text', required: true },
-            { label: 'Date of Occurrence', id: 'dateOfOccurrence', type: 'date', required: true },
-            { label: 'Time of Occurrence', id: 'timeOfOccurrence', type: 'time', required: true },
-            { label: 'Date Reported', id: 'dateReported', type: 'date', required: true },
-            { label: 'Time Reported', id: 'timeReported', type: 'time', required: true },
-            { label: 'Informer Name', id: 'informerName', placeholder: 'Informer Name', type: 'text', required: true },
-            { label: 'Informer Residence', id: 'informerResidence', placeholder: 'Informer Residence', type: 'text', required: true },
-            { label: 'Place of Occurrence', id: 'placeOfOccurrence', placeholder: 'Place of Occurrence', type: 'text', required: true },
-            { label: 'Distance and Direction', id: 'distanceDirection', placeholder: 'Distance and Direction', type: 'text', required: true },
-            { label: 'Criminal Name', id: 'criminalName', placeholder: 'Criminal Name', type: 'text' },
-            { label: 'Criminal Address', id: 'criminalAddress', placeholder: 'Criminal Address', type: 'text' },
-          ].map(({ label, id, placeholder, type, required }) => (
+              { label: 'Book No.', id: 'bookNo', placeholder: 'Book No.', type: 'text', disabled: false },
+              { label: 'Police Station', id: 'policeStation', placeholder: 'Police Station', type: 'text', required: true, disabled: true },
+              { label: 'District', id: 'district', placeholder: 'District', type: 'text', required: true, disabled: false },
+              { label: 'Date of Occurrence', id: 'dateOfOccurrence', type: 'date', required: true, disabled: false },
+              { label: 'Time of Occurrence', id: 'timeOfOccurrence', type: 'time', required: true, disabled: false },
+              { label: 'Date Reported', id: 'dateReported', type: 'date', required: true, disabled: false },
+              { label: 'Time Reported', id: 'timeReported', type: 'time', required: true, disabled: false },
+              { label: 'Informer Name', id: 'informerName', placeholder: 'Informer Name', type: 'text', required: true, disabled: false },
+              { label: 'Informer Residence', id: 'informerResidence', placeholder: 'Informer Residence', type: 'text', required: true, disabled: false },
+              { label: 'Place of Occurrence', id: 'placeOfOccurrence', placeholder: 'Place of Occurrence', type: 'text', required: true, disabled: false },
+              { label: 'Distance and Direction', id: 'distanceDirection', placeholder: 'Distance and Direction', type: 'text', required: true, disabled: false },
+              { label: 'Criminal Name', id: 'criminalName', placeholder: 'Criminal Name', type: 'text', disabled: false },
+              { label: 'Criminal Address', id: 'criminalAddress', placeholder: 'Criminal Address', type: 'text', disabled: false },
+          ].map(({ label, id, placeholder, type, required, disabled }) => (
             <div key={id} className="relative">
               <label htmlFor={id} className="block text-sm font-medium text-gray-700">{label}</label>
               <input
@@ -114,6 +121,7 @@ const FIRForm = () => {
                 placeholder={placeholder}
                 value={formData[id]}
                 onChange={handleChange}
+                disabled={disabled}
                 className="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-600"
               />
             </div>
